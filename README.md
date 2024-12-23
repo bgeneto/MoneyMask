@@ -87,8 +87,8 @@ For more fine-grained control, you can pass an options object to override defaul
 document.addEventListener('DOMContentLoaded', () => {
   MoneyMask.apply('#price', {
     prefix: 'R$ ',
-    decimal: '.',
-    thousands: ',',
+    decimal: ',',
+    thousands: '.',
     precision: 2,
     allowNegative: false
   });
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 ```
 
-These options will change the formatting to (for example) “R$ 1,234.56” without permitting negative values.
+These options will change the formatting to (for example) “R$ 1.234,56” without permitting negative values.
 
 ### Applying to Multiple Elements
 
@@ -122,6 +122,26 @@ document.addEventListener('DOMContentLoaded', () => {
 ```
 
 In this example, all three inputs share the same selector `[data-mask="euro"]` and the same configuration options.
+Another example with multiple inputs using data attributes:
+
+```html
+<input type="text" data-mask="euro" placeholder="€ 0,00">
+<input type="text" data-prefix="£ " data-precision="2" placeholder="£ 0.00">
+<input type="text" data-prefix="$ " data-precision="2" placeholder="$ 0.00">
+<script>
+// Auto-initialize all monetary inputs
+class MonetaryInput extends HTMLInputElement {
+    connectedCallback() {
+        EuroMoneyMask.apply(this, {
+            prefix: this.dataset.prefix || '€ ',
+            precision: parseInt(this.dataset.precision) || 2,
+            decimal: this.dataset.decimal || ',',
+            thousands: this.dataset.thousands || '.'
+        });
+    }
+}
+</script>
+```
 
 ### Retrieving and Setting Values
 
