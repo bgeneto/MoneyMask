@@ -35,7 +35,7 @@ It helps to ensure consistent and valid monetary inputs across different locales
 ## Features
 
 - Automatically formats user input as currency while typing (e.g. "1.234,56" or "1,234.56").  
-- Optionally allows negative values and places the minus sign appropriately ("€ -123.45").  
+- Optionally allows negative values and places the minus sign appropriately ("€ -123,45").  
 - Configurable decimal and thousands separators.  
 - Works seamlessly with multiple inputs in the same page.  
 - Simple API for programmatic get/set of numeric values.
@@ -160,7 +160,7 @@ Here are the defaults with brief explanations:
 | `thousands`    | `'.'`   | The character used as the thousands separator.                                             |
 | `precision`    | `2`     | Number of digits after the decimal point.                                                  |
 | `prefix`       | `'€ '`  | String added before the numeric value (e.g., `'€ '`, `'$'`, `'R$ '`).                       |
-| `allowNegative`| `true`  | Whether negative values are allowed, e.g. "€ -123.45".                                      |
+| `allowNegative`| `true`  | Whether negative values are allowed, e.g. "€ -123,45".                                      |
 
 You can override any of the above options by passing an object to the constructor or the `MoneyMask.apply()` call.
 
