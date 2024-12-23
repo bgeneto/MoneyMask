@@ -129,6 +129,19 @@ Another example with multiple inputs using data attributes:
 <input type="text" data-prefix="£ " data-precision="2" placeholder="£ 0.00">
 <input type="text" data-prefix="$ " data-precision="2" placeholder="$ 0.00">
 <script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('[data-mask="euro"]').forEach(input => {
+        EuroMoneyMask.apply(input, {
+            prefix: input.dataset.prefix || '€ ',
+            precision: parseInt(input.dataset.precision) || 2
+        });
+    });
+});
+</script>
+```
+You can even create a more declarative approach using custom attributes:
+
+```js
 // Auto-initialize all monetary inputs
 class MonetaryInput extends HTMLInputElement {
     connectedCallback() {
@@ -140,7 +153,16 @@ class MonetaryInput extends HTMLInputElement {
         });
     }
 }
-</script>
+
+// Register the custom element
+customElements.define('monetary-input', MonetaryInput, { extends: 'input' });
+```
+Then use it in HTML:
+
+```html
+<!-- Using custom element -->
+<input type="text" is="monetary-input">
+<input type="text" is="monetary-input" data-prefix="$ " data-decimal="." data-thousands=",">
 ```
 
 ### Retrieving and Setting Values
