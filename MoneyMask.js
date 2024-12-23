@@ -1,28 +1,9 @@
 /**
- * @fileoverview Money input mask formatter with European currency support
- * @version 1.0.0
+ * @fileoverview A small JavaScript class that formats user input as monetary values.
+ * @version 1.0.1
  * @author Bernhard Enders
  * @license MIT
- *
- * Copyright (c) 2024
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * @modified 2024-12-23
  */
 
 /**
@@ -55,8 +36,21 @@ class MoneyMask {
     /**
      * Constructor with options for mask.
      */
-    constructor(inputElement, options = {}) {
-        this.input = inputElement;
+    constructor(inputElementOrSelector, options = {}) {
+        if (typeof inputElementOrSelector === 'string') {
+            this.input = document.querySelector(inputElementOrSelector);
+        } else if (inputElementOrSelector instanceof HTMLElement) {
+            // If a DOM element is passed, use it directly
+            this.input = inputElementOrSelector;
+        } else {
+            // If neither a string nor an element, ignore
+            return;
+        }
+
+        // If no element is found, ignore
+        if (!this.input) {
+            return;
+        }
         this.options = {
             decimal: ',',
             thousands: '.',
@@ -69,6 +63,7 @@ class MoneyMask {
     }
 
     setupEventListeners() {
+        // Use 'input' to reformat whenever the text changes (typing, paste, etc.)
         this.input.addEventListener('input', this.handleInput.bind(this));
         this.input.addEventListener('focus', this.handleFocus.bind(this));
         this.input.addEventListener('blur', this.handleBlur.bind(this));
@@ -95,32 +90,54 @@ class MoneyMask {
         }
 
         // Format and replace input value
-        event.target.value = this.formatValue(numericValue);
+        const fmtVal = this.formatValue(numericValue);
+        event.target.value = fmtVal;
     }
 
     /**
-     * Keydown handler to allow minus only if negative is allowed and no minus is present yet.
+     * Keydown handler to (1) allow cut/copy/paste, minus sign, arrows, etc.
+     * and (2) properly allow digits and decimal.
      */
     handleKeyDown(event) {
         const { key, keyCode, ctrlKey, metaKey, shiftKey, target } = event;
+
         // Allow backspace, delete, tab, escape, enter, arrows, or Ctrl/Cmd+A
-        if ([46, 8, 9, 27, 13].includes(keyCode) ||
-            (key === 'a' && (ctrlKey || metaKey)) ||
-            (keyCode >= 35 && keyCode <= 40)) {
+        if (
+            [46, 8, 9, 27, 13].includes(keyCode) || // Del, Bksp, Tab, Esc, Enter
+            (key.toLowerCase() === 'a' && (ctrlKey || metaKey)) || // Ctrl/Cmd + A
+            (keyCode >= 35 && keyCode <= 40) // Home, End, Arrow keys
+        ) {
             return;
         }
-        // Handle minus sign:
-        // - allow if allowNegative: true
-        // - disallow if already has minus, or not allowed to be negative
+
+        // Allow cut/copy/paste if Ctrl/Cmd is pressed
+        if (
+            (key.toLowerCase() === 'c' || key.toLowerCase() === 'v' || key.toLowerCase() === 'x') &&
+            (ctrlKey || metaKey)
+        ) {
+            return;
+        }
+
+        // Handle minus sign if negatives are allowed.
         if ((key === '-' || keyCode === 189)) {
             if (!this.options.allowNegative || target.value.includes('-')) {
                 event.preventDefault();
             }
             return;
         }
+
+        // Allow the decimal character if user hasn’t typed it yet.
+        if (key === this.options.decimal) {
+            // block a second decimal
+            if (target.value.includes(this.options.decimal)) {
+                event.preventDefault();
+            }
+            return;
+        }
+
         // Enforce digits (and numeric keypad digits). Block everything else.
-        if ((shiftKey || keyCode < 48 || keyCode > 57) &&
-            (keyCode < 96 || keyCode > 105)) {
+        // The shift check will block !@#$... above the top number row.
+        if ((shiftKey || keyCode < 48 || keyCode > 57) && (keyCode < 96 || keyCode > 105)) {
             event.preventDefault();
         }
     }
@@ -162,7 +179,8 @@ class MoneyMask {
         parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, this.options.thousands);
 
         // Ensure minus is placed after prefix
-        return `${this.options.prefix}${isNegative ? '-' : ''}${parts.join(this.options.decimal)}`;
+        const ret = `${this.options.prefix}${isNegative ? '-' : ''}${parts.join(this.options.decimal)}`
+        return ret;
     }
 
     /**
@@ -195,7 +213,6 @@ class MoneyMask {
         const value = this.input.value;
         const isNegative = this.options.allowNegative && value.includes('-');
         const rawValue = value.replace(/-/g, '');
-
         const numericValue = this.extractNumericValue(rawValue);
         return isNegative
             ? -parseFloat(numericValue.replace(this.options.decimal, '.'))
@@ -209,7 +226,6 @@ class MoneyMask {
         const strValue = String(value);
         const isNegative = this.options.allowNegative && strValue.startsWith('-');
         const numeric = strValue.replace(/-/g, '');
-
         this.input.value = this.formatValue(isNegative ? '-' + numeric : numeric);
     }
 
