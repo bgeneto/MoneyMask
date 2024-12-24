@@ -131,12 +131,10 @@ Another example with multiple inputs using data attributes:
 <input type="text" data-prefix="$ " data-precision="2" placeholder="$ 0.00">
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('[data-mask="euro"]').forEach(input => {
-        MoneyMask.apply(input, {
-            prefix: input.dataset.prefix || '€ ',
-            precision: parseInt(input.dataset.precision) || 2
-        });
-    });
+     MoneyMask.apply('[data-mask="euro"]', {
+         prefix: input.dataset.prefix || '€ ',
+         precision: parseInt(input.dataset.precision) || 2
+     });
 });
 </script>
 ```
