@@ -16,6 +16,7 @@ A lightweight JavaScript class that formats user input as monetary values, suppo
 6. [Example Project Structure](#example-project-structure)  
 7. [Contributing](#contributing)  
 8. [License](#license)  
+9. [Running Unit Tests](#running-unit-tests)  
 
 ---
 
@@ -223,4 +224,44 @@ We welcome bug reports, feature requests, and pull requests!
 ## License
 
 MoneyMask is open-source software licensed under the MIT license. For more information, please see the [LICENSE](LICENSE) file.
+
+---
+
+## Running Unit Tests
+
+To ensure the correctness of the MoneyMask class, we have included a set of unit tests. These tests cover various scenarios, including the behavior of the `handleFocus` method.
+
+### Prerequisites
+
+Make sure you have Node.js and npm installed on your machine.
+
+### Installing Dependencies
+
+First, install the necessary dependencies by running:
+
+```sh
+npm install
+```
+
+### Running the Tests
+
+To run the unit tests, use the following command:
+
+```sh
+npm test
+```
+
+This will execute the test suite and display the results in the console.
+
+### Test Coverage
+
+The unit tests cover the following scenarios:
+
+- Placing the caret at the end of the input value on focus.
+- Selecting the entire text input if the `selectOnFocus` option is set to true.
+- Handling different input values, including empty input, input with only the prefix, and input with a full monetary value.
+- Checking the behavior when the input field is focused multiple times in succession.
+- Ensuring the `handleFocus` method works correctly with different configurations of the MoneyMask options.
+
+Feel free to add more tests to cover additional scenarios and edge cases.
 

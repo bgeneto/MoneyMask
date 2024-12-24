@@ -57,6 +57,7 @@ class MoneyMask {
             precision: 2,
             prefix: '€ ',
             allowNegative: true,
+            selectOnFocus: false,
             ...options
         };
         this.setupEventListeners();
@@ -187,8 +188,12 @@ class MoneyMask {
      * Place caret at the end on focus.
      */
     handleFocus(event) {
-        const length = event.target.value.length;
-        event.target.setSelectionRange(length, length);
+        if (this.options.selectOnFocus) {
+            event.target.select();
+        } else {
+            const length = event.target.value.length;
+            event.target.setSelectionRange(length, length);
+        }
     }
 
     /**
