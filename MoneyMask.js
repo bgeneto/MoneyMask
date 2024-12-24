@@ -1,6 +1,6 @@
 /**
  * @fileoverview A small JavaScript class that formats user input as monetary values.
- * @version 1.0.1
+ * @version 1.0.2
  * @author Bernhard Enders
  * @license MIT
  * @modified 2024-12-23
