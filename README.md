@@ -131,7 +131,7 @@ Another example with multiple inputs using data attributes:
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-mask="euro"]').forEach(input => {
-        EuroMoneyMask.apply(input, {
+        MoneyMask.apply(input, {
             prefix: input.dataset.prefix || '€ ',
             precision: parseInt(input.dataset.precision) || 2
         });
@@ -145,7 +145,7 @@ You can even create a more declarative approach using custom attributes:
 // Auto-initialize all monetary inputs
 class MonetaryInput extends HTMLInputElement {
     connectedCallback() {
-        EuroMoneyMask.apply(this, {
+        MoneyMask.apply(this, {
             prefix: this.dataset.prefix || '€ ',
             precision: parseInt(this.dataset.precision) || 2,
             decimal: this.dataset.decimal || ',',
