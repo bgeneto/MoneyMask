@@ -200,8 +200,9 @@ Here are the defaults with brief explanations:
 | `decimal`      | `','`   | The character used as the decimal point.                                                   |
 | `thousands`    | `'.'`   | The character used as the thousands separator.                                             |
 | `precision`    | `2`     | Number of digits after the decimal point.                                                  |
-| `prefix`       | `'€ '`  | String added before the numeric value (e.g., `'€ '`, `'$'`, `'R$ '`).                       |
-| `allowNegative`| `true`  | Whether negative values are allowed, e.g. "€ -123,45".                                      |
+| `prefix`       | `'€ '`  | String added before the numeric value (e.g., `'€ '`, `'$'`, `'R$ '`).                      |
+| `allowNegative`| `true`  | Whether negative values are allowed, e.g. "€ -123,45".                                     |
+| `selectOnFocus`| `false` | Whether to select the input content on focus.                                              |
 
 You can override any of the above options by passing an object to the constructor or the `MoneyMask.apply()` call.
 
